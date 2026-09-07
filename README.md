@@ -1,5 +1,7 @@
 # sciflow-core
 
+[![tests](https://github.com/pflores-physics/sciflow-core/actions/workflows/tests.yml/badge.svg)](https://github.com/pflores-physics/sciflow-core/actions/workflows/tests.yml)
+
 Curve fitting for experimental data that takes uncertainties seriously.
 This is the open-source engine behind **sciflow**; the report generator,
 the YAML batch pipeline and the web interface are distributed separately.
