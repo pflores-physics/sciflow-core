@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.coverage
+
+# Environments and IDE
+.venv/
+venv/
+.idea/
+.vscode/
+
+# Generated outputs
+results/
+*.png
+!examples/**/*.png

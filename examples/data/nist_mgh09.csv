@@ -1,0 +1,21 @@
+# NIST StRD nonlinear regression dataset MGH09 (public domain), 11 observations, difficulty: higher
+# https://www.itl.nist.gov/div898/strd/nls/data/mgh09.shtml
+# Model: y = b1*(x^2 + x*b2) / (x^2 + x*b3 + b4)
+# Start 1: b1=25 b2=39 b3=41.5 b4=39      Start 2: b1=0.25 b2=0.39 b3=0.415 b4=0.39
+# Certified: b1 = 1.9280693458E-01 +/- 1.1435312227E-02
+#            b2 = 1.9128232873E-01 +/- 1.9633220911E-01
+#            b3 = 1.2305650693E-01 +/- 8.0842031232E-02
+#            b4 = 1.3606233068E-01 +/- 9.0025542308E-02
+#            residual SS = 3.0750560385E-04, residual SD = 6.6279236551E-03, dof = 7
+y,x
+0.1957,4.0
+0.1947,2.0
+0.1735,1.0
+0.1600,0.5
+0.0844,0.25
+0.0627,0.167
+0.0456,0.125
+0.0342,0.1
+0.0323,0.0833
+0.0235,0.0714
+0.0246,0.0625
