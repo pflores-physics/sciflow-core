@@ -46,6 +46,20 @@ for nonlinear regression from both NIST starting points
 Residual sums of squares agree to 9–11 figures. NIST's own pass criterion is
 4–6 figures.
 
+**Check it yourself, no code reading required:**
+
+```bash
+pip install -e ".[dev]"
+python examples/validate_nist.py
+```
+
+The script fits every dataset from both official NIST starting points and
+prints, side by side, the certified value and the fitted value of each
+parameter and of its standard deviation, with the number of agreeing
+significant figures. The certified values are quoted in the header of each
+`examples/data/nist_*.csv`, copied from the NIST pages linked there, so
+anyone can compare them against the source.
+
 ## Install
 
 ```bash
