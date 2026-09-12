@@ -5,6 +5,7 @@ Public API:
     from sciflow import read_table, clean_data, fit, compare_models, diagnostics
     from sciflow.models import get_model, expression_model, multipeak
     from sciflow.plots import plot_fit_with_residuals, plot_diagnostics
+    from sciflow.tidy import tidy_files, run_tidy
 
 This is the open-source core of sciflow (engine, models, diagnostics,
 figures). Report generation, the YAML pipeline and the web interface are
@@ -17,10 +18,12 @@ from sciflow.models.registry import get_model, list_models, register_model
 from sciflow.fit.engine import compare_models, fit
 from sciflow.fit.diagnostics import diagnostics
 from sciflow.fit.result import FitResult
+from sciflow.tidy.runner import run_tidy, tidy_files
 
-__version__ = "0.4.0"
+__version__ = "0.6.0"
 
 __all__ = [
     "read_table", "clean_data", "get_model", "list_models", "register_model",
-    "fit", "compare_models", "diagnostics", "FitResult", "__version__",
+    "fit", "compare_models", "diagnostics", "FitResult", "run_tidy", "tidy_files",
+    "__version__",
 ]

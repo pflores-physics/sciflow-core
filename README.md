@@ -24,6 +24,10 @@ the YAML batch pipeline and the web interface are distributed separately.
   for trends, Durbin–Watson, Shapiro–Wilk, parameters compatible with zero,
   strongest correlation.
 * **Model comparison** by AIC/BIC.
+* **Tidy**: read several files or sheets with different headers and formats
+  (delimiter and decimal marker detected per file), harmonise column names,
+  stack or join, convert types, and write one table plus a report of every
+  rename, failed conversion and dropped row (`sciflow.tidy`).
 * **Figures**: data + fit + 1σ band with normalised residuals; histogram of
   residuals vs N(0,1) and Q-Q plot.
 
@@ -59,6 +63,13 @@ parameter and of its standard deviation, with the number of agreeing
 significant figures. The certified values are quoted in the header of each
 `examples/data/nist_*.csv`, copied from the NIST pages linked there, so
 anyone can compare them against the source.
+
+Two further audits are included and re-runnable:
+
+```bash
+python tools/audit_statistics.py   # Monte Carlo: 68 %/95 % coverage, chi2/p-value distributions, diagnostic error rates
+python tools/audit_crosscheck.py   # every reported number recomputed with closed-form formulas, numpy, statsmodels, lmfit, York ODR
+```
 
 ## Install
 

@@ -165,3 +165,27 @@ def test_odr_validation():
     x = np.arange(6.0)
     with pytest.raises(DataValidationError, match="positive"):
         fit(x, 2 * x, "linear", sigma_x=np.zeros(6))
+
+
+def test_durbin_watson_interval_depends_on_n(rng):
+    from sciflow.fit.diagnostics import diagnostics
+
+    for n in (15, 200):
+        x = np.linspace(0, 1, n)
+        y = 1 + 2 * x + rng.normal(0, 0.1, n)
+        result = fit(x, y, "linear", np.full(n, 0.1))
+        dw = [c for c in diagnostics(result) if c.key == "durbin_watson"][0]
+        half = 1.96 * 2 / np.sqrt(n)
+        assert f"{2 - half:.2f} – {2 + half:.2f}" in dw.expected
+
+
+def test_exact_data_does_not_warn_or_crash():
+    import warnings
+
+    x = np.arange(10.0)
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")  # a log(0) RuntimeWarning would fail here
+        result = fit(x, 3 * x + 1, "linear")
+        constant = fit(x, np.full(10, 2.0), "linear")
+    assert np.isclose(result.params["b"], 3) and np.isclose(result.params["a"], 1)
+    assert constant.r_squared is None and np.isfinite(list(constant.params.values())).all()

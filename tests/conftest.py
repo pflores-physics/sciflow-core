@@ -25,3 +25,23 @@ def dirty_frame():
         "S": [0.1] * 8,
         "label": list("abcdefgh"),
     })
+
+
+@pytest.fixture
+def mixed_files(tmp_path):
+    """Three sources with the same physics and different headers/formats."""
+    data = tmp_path / "data"
+    data.mkdir()
+    (data / "a.csv").write_text(
+        "Temp (C);Resistance (Ohm)\n20,5;100,1\n21,0;100,3\n", encoding="utf-8"
+    )
+    (data / "b.txt").write_text("temp_c\tR\n22.0\t100.5\nabc\t100.7\n", encoding="utf-8")
+    book = data / "c.xlsx"
+    with pd.ExcelWriter(book, engine="openpyxl") as writer:
+        pd.DataFrame({"TEMP (c)": [23.0, 24.0], "Resistance (Ohm)": [100.9, np.nan]}).to_excel(
+            writer, sheet_name="run1", index=False
+        )
+        pd.DataFrame({"Temp (C)": [25.0], "Resistance (Ohm)": [101.3]}).to_excel(
+            writer, sheet_name="run2", index=False
+        )
+    return data

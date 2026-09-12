@@ -202,7 +202,6 @@ def _solve_odr(model: Model, x, y, sigma_y, sigma_x, p0, maxfev):
         )
 
     params = sol.x[:p]
-    d = sol.x[p:]
     # Covariance of (beta, d) from the Gauss-Newton approximation, beta block.
     jac = sol.jac.toarray() if hasattr(sol.jac, "toarray") else np.asarray(sol.jac)
     try:
@@ -255,7 +254,7 @@ def fit(
         the covariance is absolute and chi-square statistics are meaningful.
     sigma_x
         1-sigma uncertainty of each ``x``. When given, the fit switches to
-        orthogonal distance regression (scipy.odr), which accounts for errors
+        orthogonal distance regression (ODRPACK formulation), which accounts for errors
         in both variables. Without it, behaviour is exactly the classic
         least-squares fit.
     p0
@@ -328,8 +327,11 @@ def fit(
             covariance = covariance * (odr_ss / dof)
         chi2 = ss_res
         p_value = float("nan")
-        aic = n * np.log(ss_res / n) + 2 * p
-        bic = n * np.log(ss_res / n) + p * np.log(n)
+        # A perfect fit (ss_res = 0) would give log(0); report -inf explicitly.
+        with np.errstate(divide="ignore"):
+            log_term = n * np.log(ss_res / n) if ss_res > 0 else -np.inf
+        aic = log_term + 2 * p
+        bic = log_term + p * np.log(n)
 
     chi2_reduced = chi2 / dof
 

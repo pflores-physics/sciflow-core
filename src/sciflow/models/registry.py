@@ -10,7 +10,7 @@ Names understood by :func:`get_model`:
 from __future__ import annotations
 
 import re
-from typing import Iterable, Optional, Sequence
+from typing import Optional, Sequence
 
 import numpy as np
 

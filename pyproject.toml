@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sciflow-core"
-version = "0.4.0"
+version = "0.6.0"
 description = "Validated curve fitting for experimental data: weighted least squares, orthogonal distance regression, multi-peak models, goodness-of-fit diagnostics."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -17,10 +17,9 @@ classifiers = [
     "Topic :: Scientific/Engineering",
     "License :: OSI Approved :: MIT License",
 ]
-dependencies = ["numpy>=1.24", "pandas>=2.0", "scipy>=1.10", "matplotlib>=3.7"]
+dependencies = ["numpy>=1.24", "pandas>=2.0", "scipy>=1.10", "matplotlib>=3.7", "openpyxl>=3.1", "pyyaml>=6.0"]
 
 [project.optional-dependencies]
-excel = ["openpyxl>=3.1"]
 dev = ["pytest>=7"]
 
 [tool.setuptools.packages.find]

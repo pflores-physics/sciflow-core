@@ -18,6 +18,7 @@ class CleanReport:
     non_numeric_rows: list[int] = field(default_factory=list)
     missing_rows: list[int] = field(default_factory=list)
     non_finite_rows: list[int] = field(default_factory=list)
+    non_positive_rows: list[int] = field(default_factory=list)
     duplicate_rows: list[int] = field(default_factory=list)
     columns_checked: list[str] = field(default_factory=list)
 
@@ -33,6 +34,7 @@ class CleanReport:
             "non_numeric_rows": self.non_numeric_rows,
             "missing_rows": self.missing_rows,
             "non_finite_rows": self.non_finite_rows,
+            "non_positive_rows": self.non_positive_rows,
             "duplicate_rows": self.duplicate_rows,
             "columns_checked": self.columns_checked,
         }
@@ -46,6 +48,7 @@ class CleanReport:
             ("non-numeric", self.non_numeric_rows),
             ("missing", self.missing_rows),
             ("non-finite", self.non_finite_rows),
+            ("non-positive uncertainty", self.non_positive_rows),
             ("duplicate", self.duplicate_rows),
         ):
             if rows:
@@ -60,6 +63,7 @@ def clean_data(
     columns: Optional[list[str]] = None,
     *,
     drop_duplicates: bool = False,
+    positive: Optional[list[str]] = None,
 ) -> tuple[pd.DataFrame, CleanReport]:
     """Return a numeric, finite copy of ``data`` plus a report.
 
@@ -74,6 +78,10 @@ def clean_data(
         Remove exactly repeated rows (over ``columns``). Off by default:
         repeated measurements are legitimate in experimental data and removing
         them changes the degrees of freedom of any subsequent fit.
+    positive
+        Columns that must be strictly positive (uncertainties). Rows with a
+        zero or negative value there are removed and reported under
+        ``non_positive_rows``; a zero σ would otherwise give infinite weight.
 
     Notes
     -----
@@ -110,7 +118,16 @@ def clean_data(
     non_finite = frame.index[~finite_mask].to_list()
     frame = frame[finite_mask]
 
-    # 3. Optional duplicates.
+    # 3. Uncertainty columns must be > 0.
+    non_positive: list[int] = []
+    for col in positive or []:
+        if col in frame.columns:
+            bad = frame[col].to_numpy(dtype=float) <= 0
+            non_positive.extend(frame.index[bad].to_list())
+            frame = frame[~bad]
+    non_positive = sorted(set(non_positive))
+
+    # 4. Optional duplicates.
     duplicates: list[int] = []
     if drop_duplicates:
         dup_mask = frame.duplicated(subset=columns, keep="first")
@@ -125,6 +142,7 @@ def clean_data(
         non_numeric_rows=sorted(non_numeric),
         missing_rows=sorted(missing - non_numeric),
         non_finite_rows=sorted(non_finite),
+        non_positive_rows=non_positive,
         duplicate_rows=sorted(duplicates),
         columns_checked=list(columns),
     )

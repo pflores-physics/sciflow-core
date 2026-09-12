@@ -126,9 +126,15 @@ def diagnostics(result: FitResult) -> list[Check]:
     zz = z if np.all(np.isfinite(z)) else r
     if n >= 12:
         dw = float(np.sum(np.diff(zz) ** 2) / np.sum(zz**2))
+        # Under independence DW ≈ 2(1 - rho_1) with sd(rho_1) ≈ 1/sqrt(N), so a
+        # 95 % interval is 2 ± 1.96·2/sqrt(N) (fixed 1.5–2.5 bounds give ~10 %
+        # false alarms at N ≈ 20 and hide real autocorrelation at large N).
+        half = 1.96 * 2.0 / np.sqrt(n)
+        lo_dw, hi_dw = 2.0 - half, 2.0 + half
         checks.append(Check("durbin_watson", "Durbin–Watson statistic", f"{dw:.2f}",
-                            "≈ 2 (1.5 – 2.5)", "ok" if 1.5 <= dw <= 2.5 else "warn",
-                            "< 1.5: neighbouring residuals have the same sign (systematic deviation)."))
+                            f"≈ 2 ({lo_dw:.2f} – {hi_dw:.2f} for N = {n})",
+                            "ok" if lo_dw <= dw <= hi_dw else "warn",
+                            "Below the interval: neighbouring residuals have the same sign (systematic deviation)."))
 
     # 6. Normality: Shapiro–Wilk ---------------------------------------------
     if 8 <= n <= 5000 and np.std(zz) > 0:
